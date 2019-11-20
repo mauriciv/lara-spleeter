@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class AudioFilesController extends Controller
 {
@@ -15,9 +16,22 @@ class AudioFilesController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'file' => 'mimes:mp3',
+            'audio_file' => [
+                'mimes:mpga,mp2,mp2a,mp3,m2a,m3a',
+                'max:10000',
+            ],
         ]);
 
-        return response('All good');
+        $uploadedFile = $request->file('audio_file');
+
+        $sha1sum = sha1_file($uploadedFile->path());
+
+        if (!Storage::exists('source_files/'.$sha1sum)) {
+            $uploadedFile->storeAs('source_files', $sha1sum);
+            return response('FILE DID NOT EXIST');
+        }
+        return response('FILE EXISTED');
+
+        // return response($path);
     }
 }

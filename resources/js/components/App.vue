@@ -1,6 +1,9 @@
 <template>
     <div>
-        <form>
+        <form
+            v-if="!sentFile"
+            enctype="multipart/form-data"
+        >
             <div class="p-2 flex flex-col items-center">
                 <input
                     ref="file"
@@ -12,10 +15,13 @@
                     class="hover:bg-purple-800 border border-purple-800 text-purple-800 hover:text-white bg-white my-2 px-4 py-2 rounded shadow"
                     :class="{ 'cursor-not-allowed opacity-50': waitingResponse }"
                     :disabled="waitingResponse || file === null"
-                    @click="submitFile()"
+                    @click.prevent="submitFile()"
                 >
                     Upload File
                 </button>
+                <div v-if="filename" class="m-2 text-xl">
+                    {{ filename }}
+                </div>
             </div>
         </form>
     </div>
@@ -29,6 +35,8 @@ export default {
         return {
             file: null,
             waitingResponse: false,
+            sentFile: false,
+            filename: '',
         }
     },
 
@@ -39,9 +47,9 @@ export default {
         submitFile() {
             this.waitingResponse = true;
             let formData = new FormData();
-            formData.append('file', this.file);
+            formData.append('audio_file', this.file);
             axios.post(
-                `/audio-files`,
+                '/audio-files',
                 formData,
                 {
                     headers: {
@@ -52,6 +60,7 @@ export default {
                 console.log('SENT');
                 console.log(response);
                 this.file = null;
+                this.filename = response.data;
             }).catch(error => {
                 console.debug(error);
                 for (const key in error) {
