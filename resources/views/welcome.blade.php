@@ -8,10 +8,10 @@
     <link href="{{ mix('css/app.css') }}" rel="stylesheet">
     <script src="{{ mix('js/app.js') }}" defer></script>
 </head>
-<body>
+<body class="bg-gray-300">
     <div id="app">
         <main>
-            <App></App>
+            <App class="container mx-auto"></App>
         </main>
     </div>
 </body>

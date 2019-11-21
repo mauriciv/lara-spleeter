@@ -16,3 +16,4 @@ Route::get('/', function () {
 });
 
 Route::post('audio-files', 'AudioFilesController@store');
+Route::get('spleeted-files/{sha1sum}', 'SpleetedFilesController@show');
