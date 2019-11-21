@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\FileUploaded;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -28,10 +29,10 @@ class AudioFilesController extends Controller
 
         if (!Storage::exists('source_files/'.$sha1sum)) {
             $uploadedFile->storeAs('source_files', $sha1sum);
-            return response('FILE DID NOT EXIST');
         }
-        return response('FILE EXISTED');
 
-        // return response($path);
+        event(new FileUploaded($sha1sum));
+
+        return response($sha1sum);
     }
 }
