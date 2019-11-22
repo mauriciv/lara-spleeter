@@ -40,11 +40,11 @@ class SpleetFile implements ShouldQueue
         }
         $output = [];
         $returnVar = null;
-        exec('cd ' . storage_path('app/') . " && spleeter separate -i source_files/$sha1sum -p spleeter:5stems -o spleeted_files", $output, $returnVar);
+        $output = system("./spleet-file.sh $sha1sum", $returnVar);
 
         if ($returnVar !== 0) {
             Log::error("Could not spleet file source_files/$sha1sum");
-            Log::info(implode("===", $output));
+            Log::info($output);
             return;
         }
 
