@@ -17,7 +17,7 @@ class SpleetedFilesController extends Controller
     public function show($sha1sum)
     {
         if (!Storage::exists("spleeted_files/$sha1sum")) {
-            return response('not yet spleeted');
+            return $this->getCompletionPercentage($sha1sum);
         }
         $files = Storage::files("spleeted_files/$sha1sum");
         $audioFiles = collect($files)->filter(function ($file) {
@@ -27,5 +27,18 @@ class SpleetedFilesController extends Controller
             return response('not yet converted');
         }
         return Storage::files("spleeted_files/$sha1sum");
+    }
+
+    public function getCompletionPercentage($sha1sum)
+    {
+        $files = Storage::files("ffmpeg-split");
+        $splitFiles = collect($files)->filter(function ($file) use ($sha1sum) {
+            return Str::startsWith($file, "ffmpeg-split/$sha1sum");
+        });
+        if ($splitFiles->isEmpty()) {
+            return 0;
+        }
+        $spleetedDirs = collect(Storage::directories("ffmpeg-split/spleeted_files/"));
+        return ($spleetedDirs->count() / $splitFiles->count()) * 100;
     }
 }

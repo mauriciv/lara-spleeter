@@ -25,6 +25,15 @@
         <div v-if="filename" class="m-2">
             {{ filename }}
         </div>
+        <div v-if="fileSent" class="m-2">
+            <progress
+                class="border border-black mx-auto w-full md:w-4/5"
+                :value="progress"
+                max="100"
+            >
+                {{ progress }}%
+            </progress>
+        </div>
         <div v-if="fileHasBeenSpleeted" class="m-2">
             {{ filename }} has been spleeted
         </div>
@@ -76,6 +85,7 @@ export default {
             playing: false,
             audioElements: {},
             audioIsSetUp: false,
+            progress: 0,
         }
     },
 
@@ -116,8 +126,9 @@ export default {
             console.log('CALLED checkIfFileHasBeenSpleeted');
             axios.get(`/spleeted-files/${this.filename}`)
                 .then(({data}) => {
-                    if (data === 'not yet spleeted') {
-                        setTimeout(this.checkIfFileHasBeenSpleeted, 1000);
+                    if (!isNaN(data)) {
+                        this.progress = Math.round(data);
+                        setTimeout(this.checkIfFileHasBeenSpleeted, 2000);
                         return;
                     }
                     this.fileHasBeenSpleeted = true;
