@@ -194,6 +194,8 @@ export default {
             this.audioElements.other = this.$refs.other[0];
             const otherTrack = audioContext.createMediaElementSource(this.audioElements.other);
             otherTrack.connect(audioContext.destination);
+
+            this.audioIsSetUp = true;
         },
         toggleAll() {
             if (!this.audioIsSetUp) {
