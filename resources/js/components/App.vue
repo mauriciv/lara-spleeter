@@ -42,10 +42,17 @@
         </div>
         <div v-if="fileHasBeenConverted">
             <button
-                class="hover:bg-blue-800 border border-blue-800 text-blue-800 hover:text-white bg-white my-2 px-4 py-2 rounded shadow"
+                class="hover:bg-blue-800 border border-blue-800 text-blue-800 hover:text-white bg-white m-2 px-4 py-2 rounded shadow"
                 @click="toggleAll"
             >
-                Play All
+                <span v-if="playing">Pause</span>
+                <span v-else>Play</span>
+            </button>
+            <button
+                class="hover:bg-green-800 border border-green-800 text-green-800 hover:text-white bg-white m-2 px-4 py-2 rounded shadow"
+                @click="resetAll"
+            >
+                Reset All
             </button>
         </div>
         <div v-for="file in convertedFiles" class="m-2">
@@ -218,6 +225,14 @@ export default {
                 }
             }
             this.playing = true;
+        },
+        resetAll() {
+            for (const key in this.audioElements) {
+                if (this.audioElements.hasOwnProperty(key)) {
+                    const audioElement = this.audioElements[key];
+                    audioElement.fastSeek(0);
+                }
+            }
         },
     },
 }
